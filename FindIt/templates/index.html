@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FindIt — Smart Campus Lost &amp; Found</title>
+<style>
+:root {
+  --ink: #101b2d; --muted: #697386; --paper: #f5f6f8;
+  --blue: #9cc4ff; --line: #dce2eb; --white: #fff;
+  --navy: #111d32; --accent: #285bd4;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+a { color: inherit; text-decoration: none; }
+.wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+nav { display:flex; justify-content:space-between; align-items:center; padding:22px 0; gap:20px; }
+.brand { display:flex; gap:11px; align-items:center; font-weight:800; letter-spacing:-.04em; font-size:20px; }
+.brand-mark { width:35px; height:35px; display:grid; place-items:center; border-radius:11px; background:var(--blue); color:var(--navy); font-size:19px; }
+.nav-links { display:flex; gap:25px; align-items:center; color:#c6cfdd; font-size:13px; }
+.nav-links a:hover { color:white; }
+.nav-cta { border:1px solid #64748b; padding:10px 14px; border-radius:7px; color:white!important; }
+.hero { background:var(--navy); color:white; position:relative; overflow:hidden; }
+.hero:after { content:""; position:absolute; width:420px; height:420px; border:1px solid #31415b; border-radius:50%; right:-80px; top:70px; box-shadow:0 0 0 45px #ffffff04, 0 0 0 90px #ffffff03; pointer-events:none; }
+.hero-inner { position:relative; z-index:1; padding-bottom:76px; }
+.eyebrow { color:var(--blue); text-transform:uppercase; letter-spacing:.16em; font-size:11px; font-weight:800; }
+.hero-grid { display:grid; grid-template-columns:1.15fr .85fr; gap:60px; align-items:center; padding:58px 0 46px; }
+h1 { font-size:clamp(48px, 7vw, 82px); letter-spacing:-.075em; line-height:.98; margin:18px 0 24px; max-width:700px; }
+h1 span { color:var(--blue); }
+.hero-copy { color:#c4ccda; line-height:1.8; max-width:510px; font-size:15px; }
+.actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:28px; }
+.btn { display:inline-flex; align-items:center; justify-content:center; padding:13px 17px; border-radius:7px; font-weight:700; font-size:13px; border:1px solid transparent; cursor:pointer; }
+.btn-primary { background:var(--blue); color:var(--navy); }
+.btn-secondary { border-color:#526078; color:white; background:transparent; }
+.hero-meta { display:flex; gap:28px; flex-wrap:wrap; border-top:1px solid #344158; padding-top:20px; color:#c6cfdd; font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+.hero-meta strong { color:white; display:block; margin-bottom:5px; font-size:12px; }
+.code-card { background:#172640; border:1px solid #34435a; border-radius:14px; padding:22px; box-shadow:0 25px 70px #0002; transform:rotate(1deg); }
+.card-top { display:flex; justify-content:space-between; color:#a9b7cb; font-size:11px; border-bottom:1px solid #34435a; padding-bottom:16px; }
+.dot { display:inline-block; width:7px; height:7px; background:#86d6b0; border-radius:50%; margin-right:7px; }
+.code-lines { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; line-height:2.1; color:#b7c5d9; padding:17px 0 10px; }
+.code-lines .num { color:#667891; display:inline-block; width:28px; }
+.code-lines .key { color:#9cc4ff; }
+.code-lines .val { color:#a6e3bd; }
+.mini-status { background:#1d3150; border-radius:8px; padding:13px; display:flex; justify-content:space-between; font-size:11px; color:#d5deeb; }
+.mini-status b { color:#9cc4ff; }
+.section { padding:78px 0; }
+.section-head { display:flex; justify-content:space-between; gap:25px; align-items:end; margin-bottom:30px; }
+.kicker { color:var(--accent); font-size:11px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }
+h2 { font-size:clamp(30px, 4vw, 43px); letter-spacing:-.06em; margin:10px 0 0; }
+.section-intro { max-width:410px; color:var(--muted); line-height:1.7; font-size:14px; margin:0; }
+.content-grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:22px; align-items:start; }
+.panel { background:white; border:1px solid var(--line); border-radius:13px; padding:25px; }
+.panel h3 { margin:9px 0 8px; letter-spacing:-.035em; font-size:21px; }
+.panel-copy { color:var(--muted); line-height:1.7; font-size:13px; margin-top:0; }
+.form-label { display:block; font-size:12px; font-weight:700; margin:13px 0 6px; }
+input, select, textarea { width:100%; padding:12px 13px; border:1px solid var(--line); border-radius:7px; background:#fbfcfe; color:var(--ink); font:inherit; font-size:13px; outline:none; }
+input:focus, select:focus, textarea:focus { border-color:#7aa6f8; box-shadow:0 0 0 3px #9cc4ff40; }
+textarea { min-height:85px; resize:vertical; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.submit { width:100%; margin-top:18px; border:0; }
+.search-row { display:flex; gap:10px; margin:16px 0 21px; }
+.search-row input { flex:1; }
+.search-row button { width:auto; white-space:nowrap; }
+.results-top { display:flex; justify-content:space-between; align-items:center; gap:10px; padding-bottom:13px; border-bottom:1px solid var(--line); }
+.results-top h3 { margin:0; font-size:18px; }
+.count { font-size:11px; color:var(--muted); }
+.item-card { border:1px solid var(--line); border-radius:10px; padding:17px; margin-top:13px; background:#fff; }
+.item-title-row { display:flex; justify-content:space-between; align-items:start; gap:10px; }
+.item-card h4 { margin:0; font-size:16px; letter-spacing:-.025em; }
+.pill { border-radius:30px; padding:5px 9px; font-size:10px; font-weight:800; background:#eaf1ff; color:#2453b8; white-space:nowrap; }
+.pill.found { background:#e6f7ef; color:#16764b; }
+.item-desc { color:var(--muted); font-size:13px; line-height:1.6; }
+.item-meta { display:flex; flex-wrap:wrap; gap:12px; font-size:11px; color:#4d5b70; }
+.delete { width:auto; margin-top:13px; background:#fff; color:#9d2b36; border:1px solid #f0c9cc; padding:8px 10px; font-size:11px; }
+.empty { text-align:center; padding:35px 10px; color:var(--muted); font-size:13px; }
+.quote-band { background:#e6edf7; border-top:1px solid #d8e1ee; border-bottom:1px solid #d8e1ee; padding:35px 0; }
+.quote-inner { display:flex; justify-content:space-between; gap:25px; align-items:center; }
+.quote-inner p { margin:0; font-size:clamp(19px, 3vw, 27px); letter-spacing:-.04em; max-width:700px; line-height:1.35; }
+.quote-inner small { color:var(--muted); font-size:10px; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; }
+footer { background:var(--navy); color:#c4ccda; padding:28px 0; font-size:11px; }
+.footer-inner { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+footer strong { color:white; }
+@media(max-width:760px) {
+ .wrap { width:min(100% - 28px, 600px); }
+ .nav-links a:not(.nav-cta) { display:none; }
+ .hero-grid, .content-grid { grid-template-columns:1fr; gap:28px; }
+ .hero-grid { padding-top:36px; }
+ .code-card { max-width:500px; transform:none; }
+ .section { padding:55px 0; }
+ .section-head { display:block; }
+ .section-intro { margin-top:15px; }
+ .quote-inner { align-items:start; flex-direction:column; }
+}
+@media(max-width:460px) {
+ h1 { font-size:48px; }
+ .form-row { grid-template-columns:1fr; gap:0; }
+ .panel { padding:18px; }
+ .search-row { flex-direction:column; }
+ .search-row button { width:100%; }
+}
+</style>
+</head>
+<body>
+<section class="hero" id="top">
+  <div class="wrap hero-inner">
+    <nav>
+      <a class="brand" href="#top"><span class="brand-mark">⌕</span> FindIt<span style="color:#9cc4ff">.</span></a>
+      <div class="nav-links">
+        <a href="#reports">Reports</a>
+        <a href="#how">How it works</a>
+        <a class="nav-cta" href="#report">Report an item ↗</a>
+      </div>
+    </nav>
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Campus community · Lost &amp; found</div>
+        <h1>Lost something?<br><span>Let's find it.</span></h1>
+        <p class="hero-copy">A smarter, simpler place to reunite students with the things that matter. Report a lost item, share something you've found, and help your campus community.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#report">＋ Report an item</a>
+          <a class="btn btn-secondary" href="#reports">Explore reports ↓</a>
+        </div>
+      </div>
+      <div class="code-card" aria-label="FindIt status card">
+        <div class="card-top"><span>FINDIT / COMMUNITY BOARD</span><span>v1.0</span></div>
+        <div class="code-lines">
+          <div><span class="num">01</span><span class="key">const</span> mission = {</div>
+          <div><span class="num">02</span>&nbsp; makeCampus <span class="val">"more helpful"</span>,</div>
+          <div><span class="num">03</span>&nbsp; returnItems: <span class="val">true</span>,</div>
+          <div><span class="num">04</span>&nbsp; community: <span class="val">"everyone"</span></div>
+          <div><span class="num">05</span>};</div>
+        </div>
+        <div class="mini-status"><span><span class="dot"></span>Community board status</span><b>READY TO HELP ↗</b></div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div><strong>01 / Report</strong>Share item details</div>
+      <div><strong>02 / Search</strong>Find matching reports</div>
+      <div><strong>03 / Reunite</strong>Connect with the owner</div>
+    </div>
+  </div>
+</section>
+
+<main>
+<section class="section" id="reports">
+  <div class="wrap">
+    <div class="section-head">
+      <div><div class="kicker">01 / Community board</div><h2>Small things. Big relief.</h2></div>
+      <p class="section-intro">Every report brings an item one step closer to its owner. Add a new report or search the board for something familiar.</p>
+    </div>
+    <div class="content-grid">
+      <section class="panel" id="report">
+        <div class="kicker">Add to the board</div>
+        <h3>Report an item.</h3>
+        <p class="panel-copy">Include a few details so the right person can recognise it.</p>
+        <form method="POST">
+          <label class="form-label" for="name">Item name</label>
+          <input id="name" name="name" placeholder="e.g. Black water bottle" required>
+          <div class="form-row">
+            <div>
+              <label class="form-label" for="type">Report type</label>
+              <select id="type" name="type" required>
+                <option value="">Choose one</option>
+                <option value="Lost">I've lost it</option>
+                <option value="Found">I've found it</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="location">Location</label>
+              <input id="location" name="location" placeholder="e.g. Library" required>
+            </div>
+          </div>
+          <label class="form-label" for="description">Description</label>
+          <textarea id="description" name="description" placeholder="Colour, brand, identifying details..." required></textarea>
+          <label class="form-label" for="contact">Contact details</label>
+          <input id="contact" name="contact" placeholder="Email or phone (use demo details)" required>
+          <button class="btn btn-primary submit" type="submit">Publish report ↗</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="kicker">Browse reports</div>
+        <h3>Look for a match.</h3>
+        <p class="panel-copy">Search by item, description, location, or report type.</p>
+        <form method="GET" class="search-row" action="#reports">
+          <input name="search" value="{{ search }}" placeholder="Try “keys” or “library”" aria-label="Search reports">
+          <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+        <div class="results-top">
+          <h3>Latest reports</h3>
+          <span class="count">{{ items|length }} shown</span>
+        </div>
+        {% for item in items %}
+        <article class="item-card">
+          <div class="item-title-row">
+            <h4>{{ item.name }}</h4>
+            <span class="pill {% if item.type == 'Found' %}found{% endif %}">{{ item.type }}</span>
+          </div>
+          <p class="item-desc">{{ item.description }}</p>
+          <div class="item-meta">
+            <span>⌖ {{ item.location }}</span>
+            <span>✉ {{ item.contact }}</span>
+          </div>
+          <form method="POST" action="{{ url_for('delete_item', item_id=item.id) }}" onsubmit="return confirm('Delete this report?')">
+            <button class="btn delete" type="submit">Delete report</button>
+          </form>
+        </article>
+        {% else %}
+        <div class="empty">No matching reports yet.<br>Be the first to add one, or try a different search.</div>
+        {% endfor %}
+      </section>
+    </div>
+  </div>
+</section>
+<section class="quote-band" id="how">
+  <div class="wrap quote-inner">
+    <p>“A helpful campus is one where people look out for each other — one found item at a time.”</p>
+    <small>FindIt / Built for community</small>
+  </div>
+</section>
+</main>
+<footer>
+  <div class="wrap footer-inner">
+    <div><strong>FindIt.</strong> Smart Campus Lost &amp; Found System</div>
+    <div>Micro-project · Flask · Docker · Kubernetes</div>
+  </div>
+</footer>
+</body>
+</html>
